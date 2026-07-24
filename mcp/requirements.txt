@@ -1,0 +1,3 @@
+# Asymptote MCP server dependencies.
+# The engine itself needs nothing; only the MCP transport layer does.
+mcp>=1.2.0

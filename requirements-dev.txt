@@ -1,0 +1,4 @@
+# Dev / CI dependencies. The engine itself has zero runtime dependencies.
+pytest>=8.0
+pyflakes>=3.0
+mcp>=1.2.0
