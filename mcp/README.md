@@ -1,7 +1,7 @@
-# Asymptote as an MCP server — local & cloud
+# Asymptote as an MCP server: local & cloud
 
 Run Asymptote as a **Model Context Protocol** tool so any AI stack can call it.
-It works **both ways** — with frontier APIs (Claude, GPT) *and* with fully
+It works **both ways**, with frontier APIs (Claude, GPT) *and* with fully
 local / self-hosted models (Ollama, LM Studio, vLLM). Pick either; the tool
 contract is identical. This guide covers a local (stdio) server for a
 workstation and a cloud (HTTP) server for a shared endpoint.
@@ -10,9 +10,9 @@ MCP is model-agnostic. If your runtime speaks MCP (or you bridge to it), your
 model gets one new tool: `analyze_complexity(code | path)`.
 
 **Two ways to consume it:**
-- **A — Frontier / hosted** (Claude Desktop, or an Anthropic/OpenAI
+- **A: Frontier / hosted** (Claude Desktop, or an Anthropic/OpenAI
   function-calling loop): easiest, no infra.
-- **B — Local / self-hosted** (Ollama, LM Studio, vLLM + an MCP-aware client):
+- **B: Local / self-hosted** (Ollama, LM Studio, vLLM + an MCP-aware client):
   fully offline, nothing leaves your box.
 
 ---
@@ -37,7 +37,7 @@ python agent_tool.py examples/sample.py
 ## 1. Local MCP server (stdio)
 
 `stdio` is the default. The **client launches the server** as a subprocess and
-talks over stdin/stdout — nothing binds to a port, nothing leaves the machine.
+talks over stdin/stdout, nothing binds to a port, nothing leaves the machine.
 
 Start it manually to confirm it boots:
 
@@ -65,18 +65,18 @@ Then register it with any MCP client. The config shape is the same everywhere
 
 ## 2. Wire it to a model
 
-### Option A — Frontier / hosted models
+### Option A: Frontier / hosted models
 Zero extra infra. Two common paths:
 
 - **Claude Desktop (or any MCP desktop client):** drop the stdio `mcpServers`
   block from step 1 into the client's config. The frontier model now calls
   `analyze_complexity` and the client runs this server locally for it.
-- **Anthropic / OpenAI function-calling loop:** you don't even need MCP —
+- **Anthropic / OpenAI function-calling loop:** you don't even need MCP,
   advertise `ASYMPTOTE_TOOL` (from `agent_tool.py`) in the request's `tools`
   array, and when the hosted model emits the call, run `run_tool(**args)` and
   return the result. Same dispatcher the MCP server uses.
 
-### Option B — Local / self-hosted models (fully offline)
+### Option B: Local / self-hosted models (fully offline)
 Keep the model on your own hardware, add Asymptote as a tool.
 
 #### Ollama / LM Studio / vLLM via an MCP-aware client
@@ -87,7 +87,7 @@ this process and returns the JSON result. Your code never leaves your box.
 
 #### Minimal DIY loop (any OpenAI-compatible local server)
 If your runtime does function-calling but not MCP, skip MCP entirely and call
-the engine directly — it is a plain Python function:
+the engine directly, it is a plain Python function:
 
 ```python
 from agent_tool import ASYMPTOTE_TOOL, run_tool   # repo root on sys.path
@@ -125,7 +125,7 @@ docker run -d --name asymptote-mcp \
   -p 8000:8000 asymptote-mcp
 ```
 
-Deploy that image anywhere that runs a container — your own VPS/homelab, Fly.io,
+Deploy that image anywhere that runs a container, your own VPS/homelab, Fly.io,
 Render, Railway, or a k8s cluster. Point your MCP client's remote-server URL at
 `http(s)://<host>:8000`.
 
@@ -141,7 +141,7 @@ Render, Railway, or a k8s cluster. Point your MCP client's remote-server URL at
 
 ### Hardening checklist (do before exposing publicly)
 - Terminate TLS at a reverse proxy (Caddy / nginx / Traefik).
-- Put an auth layer in front (proxy basic-auth, mTLS, or an API gateway) —
+- Put an auth layer in front (proxy basic-auth, mTLS, or an API gateway),
   MCP itself does not authenticate callers.
 - `path=` reads files on the SERVER. Run the container with a read-only mount
   scoped to the code you intend to analyze; never mount secrets.
@@ -154,8 +154,8 @@ Render, Railway, or a k8s cluster. Point your MCP client's remote-server URL at
 | | |
 |---|---|
 | Tool name | `analyze_complexity` |
-| Args | `code` (string) **or** `path` (string) — exactly one |
+| Args | `code` (string) **or** `path` (string), exactly one |
 | Returns | `{ ok, summary, results, disclaimer }` |
 | Deps | engine: none · server: `mcp` |
 
-*LAHA — Love All Humans Always.*
+*LAHA: Love All Humans Always.*

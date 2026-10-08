@@ -1,24 +1,22 @@
-"""Asymptote — static time & space complexity (Big-O) estimator.
-
-Built by classHuman AI - a Generative Software Engineering firm.
+"""Asymptote, static time & space complexity (Big-O) estimator.
 
 WHAT THIS IS
 ------------
 A *static, heuristic* estimator. It walks a Python AST and reasons about
 loop nesting, recursion shape, and known-cost calls to produce a per-function
-Big-O estimate for time and space — plus a confidence score and an explicit
+Big-O estimate for time and space, plus a confidence score and an explicit
 list of unknowns.
 
 WHAT THIS IS NOT
 ----------------
 A proof. The exact asymptotic complexity of an arbitrary program is
-undecidable (it reduces to the halting problem). Asymptote follows the
-TACO Loop discipline: unknown data must increase decision discipline, not
+undecidable (it reduces to the halting problem). Asymptote follows one
+rule: unknown data must increase decision discipline, not
 model confidence. So it *states what it does not know* instead of guessing
 past its evidence.
 
-Core Product Law (TACO): Unknown data must increase decision discipline.
-LAHA — Love All Humans Always.
+Core rule: Unknown data must increase decision discipline.
+LAHA: Love All Humans Always.
 """
 from __future__ import annotations
 
@@ -26,7 +24,6 @@ import ast
 import os
 import sys
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -48,11 +45,11 @@ class Cost:
         """Total order so the dominant of two costs can be chosen."""
         return (self.fact, self.exp, self.degree, self.logs)
 
-    def dominate(self, other: "Cost") -> "Cost":
+    def dominate(self, other: Cost) -> Cost:
         """Sequential composition: the bigger term wins."""
         return self if self.rank() >= other.rank() else other
 
-    def multiply(self, other: "Cost") -> "Cost":
+    def multiply(self, other: Cost) -> Cost:
         """Nested composition: work stacks (loop body inside a loop)."""
         return Cost(
             degree=self.degree + other.degree,
@@ -128,9 +125,12 @@ def _calls_to(node: ast.AST, name: str) -> int:
     """Count direct calls to a bare function `name` within `node`."""
     count = 0
     for child in ast.walk(node):
-        if isinstance(child, ast.Call) and isinstance(child.func, ast.Name):
-            if child.func.id == name:
-                count += 1
+        if (
+            isinstance(child, ast.Call)
+            and isinstance(child.func, ast.Name)
+            and child.func.id == name
+        ):
+            count += 1
     return count
 
 
@@ -176,7 +176,7 @@ def _cost_of_stmt(stmt: ast.stmt) -> Cost:
         return loop.multiply(_cost_of_body(stmt.body)).dominate(loop)
     if isinstance(stmt, (ast.If, ast.With, ast.AsyncWith)):
         inner = _cost_of_body(stmt.body)
-        if getattr(stmt, "orelse", None):
+        if isinstance(stmt, ast.If) and stmt.orelse:
             inner = inner.dominate(_cost_of_body(stmt.orelse))
         return inner
     if isinstance(stmt, ast.Try):
@@ -232,13 +232,17 @@ def _user_call_unknowns(func: ast.AST, own_name: str) -> list:
     for child in ast.walk(func):
         if isinstance(child, ast.Call) and isinstance(child.func, ast.Name):
             name = child.func.id
-            if name != own_name and name not in _SAFE_BUILTINS and name.islower():
-                if name not in seen:
-                    seen.append(name)
+            if (
+                name != own_name
+                and name not in _SAFE_BUILTINS
+                and name.islower()
+                and name not in seen
+            ):
+                seen.append(name)
     return [f"calls {n}() - cost not analyzed across function boundary" for n in seen]
 
 
-def estimate_function(func: ast.AST) -> FunctionReport:
+def estimate_function(func: ast.FunctionDef | ast.AsyncFunctionDef) -> FunctionReport:
     """Produce a time & space Big-O estimate for one function node."""
     report = FunctionReport(name=func.name, line=func.lineno)
     body_cost = _cost_of_body(func.body)
@@ -272,7 +276,7 @@ def estimate_function(func: ast.AST) -> FunctionReport:
     report.time = time_cost.label()
     report.space = space_cost.label()
 
-    # Confidence: start certain, discount for what we cannot see (TACO discipline).
+    # Confidence: start certain, discount for what we cannot see (unknowns lower confidence).
     confidence = 1.0
     report.unknowns = _user_call_unknowns(func, func.name)
     confidence -= 0.1 * len(report.unknowns)
@@ -293,8 +297,6 @@ def _iter_functions(node: ast.AST, prefix: str = ""):
         if isinstance(child, ast.ClassDef):
             yield from _iter_functions(child, prefix + child.name + ".")
         elif isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            report_node = child
-            report_node._qualname = prefix + child.name  # type: ignore[attr-defined]
             yield prefix + child.name, child
             yield from _iter_functions(child, prefix + child.name + ".")
 
@@ -364,7 +366,7 @@ def format_text(results: dict) -> str:
     return "\n".join(lines)
 
 
-def main(argv: Optional[list] = None) -> int:
+def main(argv: list | None = None) -> int:
     import json
 
     argv = list(sys.argv[1:] if argv is None else argv)

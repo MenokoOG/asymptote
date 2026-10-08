@@ -1,13 +1,13 @@
 """Asymptote MCP server.
 
 Wraps the Asymptote engine as a Model Context Protocol tool so ANY
-MCP-capable client can call it — Claude Desktop, LibreChat, Open WebUI,
+MCP-capable client can call it: Claude Desktop, LibreChat, Open WebUI,
 Cline, or your own agent loop. Works with both frontier APIs (Claude, GPT)
-and self-hosted models (Ollama / LM Studio / vLLM) — your choice.
+and self-hosted models (Ollama / LM Studio / vLLM), your choice.
 
 Transports:
-  - stdio (default) — local, the client spawns this process
-  - streamable-http / sse — cloud, run as a long-lived service
+  - stdio (default), local, the client spawns this process
+  - streamable-http / sse, cloud, run as a long-lived service
 
 Choose with the ASYMPTOTE_TRANSPORT env var. See ./README.md.
 """
@@ -19,8 +19,9 @@ import sys
 # Make the engine importable whether run from here or installed elsewhere.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from agent_tool import run_tool  # noqa: E402
-from mcp.server.fastmcp import FastMCP  # noqa: E402
+from mcp.server.fastmcp import FastMCP  # type: ignore[attr-defined]
+
+from agent_tool import run_tool
 
 mcp = FastMCP("asymptote")
 

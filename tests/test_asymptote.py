@@ -16,15 +16,19 @@ TIME_CASES = [
     ("def f(d, k):\n    return d.get(k)\n", "O(1)"),
     ("def f(xs):\n    t = 0\n    for x in xs:\n        t += x\n    return t\n", "O(n)"),
     (
-        "def f(xs):\n    out = []\n    for a in xs:\n        for b in xs:\n"
-        "            out.append((a, b))\n    return out\n",
+        (
+            "def f(xs):\n    out = []\n    for a in xs:\n        for b in xs:\n"
+            "            out.append((a, b))\n    return out\n"
+        ),
         "O(n^2)",
     ),
     ("def f(xs):\n    return sorted(xs)\n", "O(n log n)"),
     ("def f(n):\n    return [i for i in range(n)]\n", "O(n)"),
     (
-        "def f(n):\n    if n < 2:\n        return n\n"
-        "    return f(n - 1) + f(n - 2)\n",
+        (
+            "def f(n):\n    if n < 2:\n        return n\n"
+            "    return f(n - 1) + f(n - 2)\n"
+        ),
         "O(2^n)",
     ),
 ]

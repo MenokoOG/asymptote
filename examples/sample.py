@@ -1,4 +1,4 @@
-"""Sample inputs for Asymptote — each function has a known Big-O."""
+"""Sample inputs for Asymptote, each function has a known Big-O."""
 
 
 def constant_lookup(d, key):          # expected: O(1) time, O(1) space

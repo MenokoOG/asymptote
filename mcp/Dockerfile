@@ -1,4 +1,4 @@
-# Asymptote MCP server — cloud/self-hosted image.
+# Asymptote MCP server: cloud/self-hosted image.
 # Build:  docker build -t asymptote-mcp -f mcp/Dockerfile .
 # Run  :  docker run -e ASYMPTOTE_TRANSPORT=streamable-http -p 8000:8000 asymptote-mcp
 FROM python:3.12-slim
