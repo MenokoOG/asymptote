@@ -5,7 +5,7 @@ JSON-Schema tool definition. Any agent runtime (Claude tool-use, an OpenAI
 function-calling loop, a local model via Ollama/LM Studio, or the MCP server
 in ./mcp/server.py) can import ASYMPTOTE_TOOL and dispatch to run_tool().
 
-Design note: this file has ONE responsibility — adapt the engine to the
+Design note: this file has ONE responsibility, adapt the engine to the
 agent tool-call contract. The analysis logic lives in asymptote.py.
 """
 from __future__ import annotations

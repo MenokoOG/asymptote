@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+### Added
+- GitHub Actions CI (ruff, mypy, pytest).
+- `.gitattributes` enforcing LF line endings.
+
+### Changed
+- Removed brand and em dash text from the README, LICENSE, docstrings and comments.
+- Fixed lint and type findings (nested ifs, optional types, an unused `_qualname` attribute). No behavior change.
+- Stopped tracking `.github/instructions/`. It stays local.
+
 ## [0.1.0] - 2026-07-24
 ### Added
 - **Asymptote** engine (`asymptote.py`): static AST-based time & space Big-O

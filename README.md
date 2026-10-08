@@ -1,20 +1,20 @@
 # Asymptote
 
-**Static time & space complexity (Big-O) estimator for Python — built for agents.**
+**Static time & space complexity (Big-O) estimator for Python, built for agents.**
 
 > *For people who enjoy algorithms.* Asymptote is named for the curve that
-> complexity is really about — the line your runtime approaches as `n` grows.
+> complexity is really about, the line your runtime approaches as `n` grows.
 
 Point it at a `.py` file or a directory and it reports, per function, the
 estimated **time** and **space** Big-O, a **confidence** score, the
-**evidence** behind the call, and — crucially — the **unknowns** it could not
+**evidence** behind the call, and, crucially, the **unknowns** it could not
 determine. Use it from the CLI, as an agent tool, or as an MCP server.
 
 ---
 
 ## Why "unknowns" instead of false certainty
 
-The exact complexity of an arbitrary program is **undecidable** — it reduces
+The exact complexity of an arbitrary program is **undecidable**, it reduces
 to the halting problem. Asymptote is a *heuristic*, and it says so. Rather than
 bluff, it lowers its confidence and names its blind spots (recursion depth,
 cross-function calls) so you can judge the estimate instead of trusting a
@@ -22,7 +22,7 @@ label. Unknown data should increase your discipline, not the tool's confidence.
 
 ## Install
 
-Zero runtime dependencies — Python 3.10+ standard library only.
+Zero runtime dependencies: Python 3.10+ standard library only.
 
 ```bash
 git clone https://github.com/<you>/asymptote
@@ -52,8 +52,8 @@ result = run_tool(code="def f(xs):\n    return sorted(xs)")
 
 ## MCP server (local & cloud, frontier & self-hosted)
 
-Run Asymptote as a Model Context Protocol tool so your model — frontier
-(Claude, GPT) or fully local (Ollama, LM Studio, vLLM) — gets one new tool:
+Run Asymptote as a Model Context Protocol tool so your model, frontier
+(Claude, GPT) or fully local (Ollama, LM Studio, vLLM), gets one new tool:
 `analyze_complexity(code | path)`. See [`mcp/README.md`](mcp/README.md) for
 stdio (local) and HTTP/Docker (cloud) setup.
 
@@ -66,14 +66,14 @@ Asymptote walks the AST and composes a small `Cost` term
 - **Nested** loops → terms multiply, raising the polynomial degree
 - **`sorted()` / `.sort()`** → contributes an `n log n` term
 - **`while` with `// 2`** → recognized as divide-and-conquer → `log n`
-- **Recursion** — 1 self-call → `O(n)` (or `O(log n)` if halving);
+- **Recursion**, 1 self-call → `O(n)` (or `O(log n)` if halving);
   2+ self-calls → `O(2^n)` (or `O(n log n)` if halving)
 
 ## Known limits (stated, not hidden)
 
 - Python only (v0.1). The AST approach ports to other languages via a
   language-specific front end feeding the same `Cost` algebra.
-- Cross-function costs are **not** inlined — they are listed as unknowns.
+- Cross-function costs are **not** inlined, they are listed as unknowns.
 - Loop bounds are assumed to scale with `n`; a loop over a true constant is
   over-counted. Confidence and evidence flag the ambiguous cases.
 - Memoized recursion is reported at its un-memoized upper bound.
@@ -91,11 +91,9 @@ python -m pytest
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT, see [`LICENSE`](LICENSE).
 
 ---
 
-Built by **classHuman AI**, a Generative Software Engineering firm.
-The design philosophy — *unknown data must increase decision discipline, not
-model confidence* — comes from the [TACO Loop](https://www.linkedin.com/)
-decision-control architecture. Driven by **LAHA — Love All Humans Always.**
+The design philosophy is that *unknown data must increase decision discipline, not
+model confidence*. Driven by **LAHA: Love All Humans Always.**

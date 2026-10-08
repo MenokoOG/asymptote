@@ -1,4 +1,4 @@
-# Asymptote engine — zero runtime dependencies (Python 3.10+ standard library only).
+# Asymptote engine: zero runtime dependencies (Python 3.10+ standard library only).
 # The AST module and dataclasses ship with CPython. Nothing to install.
 #
 # For the optional MCP server, see ./mcp/requirements.txt
