@@ -25,7 +25,7 @@ label. Unknown data should increase your discipline, not the tool's confidence.
 Zero runtime dependencies: Python 3.10+ standard library only.
 
 ```bash
-git clone https://github.com/<you>/asymptote
+git clone https://github.com/MenokoOG/asymptote
 cd asymptote
 ```
 
